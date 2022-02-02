@@ -1,19 +1,35 @@
 import { Box, Text, TextField, Image, Button } from "@skynexui/components";
 import React from "react";
 import appConfig from "../config.json";
+import { createClient } from "@supabase/supabase-js";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0Mzc3NzE4MiwiZXhwIjoxOTU5MzUzMTgyfQ.Nb1pFZD2xxMZKEZsIhG60U9ndmk00wMAhgsotKRwM_4";
+const SUPABASE_URL = "https://exhnwsmgojkwehbtpzey.supabase.co";
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+React.useEffect();
+supabaseClient
+  .from("mensagens")
+  .select("*")
+  .then((dados) => {
+    console.log("Dados da consulta: ", dados);
+  });
+
+console.log(dadosDoSupabaseClient);
 
 export default function ChatPage() {
-  // Usuário
-
+  
   /*
+    // Usuário
     - Usuário digita no campo textarea
     - Aperta enter pra enviar
-    - Ten que adicionar o texto na listagem
+    - Tem que adicionar o texto na listagem
 
     // Dev
     - [x] Campo criado
     - [x] Vamos usar o onChange usa o UseState (ter if pra caso seja enter pra limpar a variável)
-    - [ ] Lista de mensagens
+    - [x] Lista de mensagens
     */
 
   const [mensagem, setMensagem] = React.useState("");
@@ -26,10 +42,7 @@ export default function ChatPage() {
       texto: novaMensagem,
     };
     // Chamada de um backend
-    setListaMensagem([
-        mensagem,
-        ...listaMensagem,
-    ]);
+    setListaMensagem([mensagem, ...listaMensagem]);
     setMensagem("");
   }
 
@@ -157,7 +170,7 @@ function MessageList(props) {
       tag="ul"
       styleSheet={{
         overflow: "scroll",
-        display: "flex",
+        display: "flex-wrap",
         flexDirection: "column-reverse",
         flex: 1,
         color: appConfig.theme.colors.neutrals["000"],
