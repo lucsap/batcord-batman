@@ -1,7 +1,8 @@
 import { Box, Text, TextField, Image, Button } from "@skynexui/components";
+import { createClient } from "@supabase/supabase-js";
+import { useRouter } from "next/router";
 import React from "react";
 import appConfig from "../config.json";
-import { createClient } from "@supabase/supabase-js";
 
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0Mzc3NzE4MiwiZXhwIjoxOTU5MzUzMTgyfQ.Nb1pFZD2xxMZKEZsIhG60U9ndmk00wMAhgsotKRwM_4";
@@ -21,6 +22,9 @@ export default function ChatPage() {
     - [x] Lista de mensagens
     */
 
+  const roteamento = useRouter();
+  const usuarioLogado = roteamento.query.username;
+  // console.log('Roteamento.Query', roteamento.query)
   const [mensagem, setMensagem] = React.useState("");
   const [listaMensagem, setListaMensagem] = React.useState([]);
 
@@ -32,12 +36,12 @@ export default function ChatPage() {
         console.log("Dados da consulta: ", data);
         setListaMensagem(data);
       });
-  }, []);
+  }, [listaMensagem]);
 
   function handleNovaMensagem(novaMensagem) {
     const mensagem = {
       // id: listaMensagem.length + 1,
-      de: "lucsap",
+      de: usuarioLogado,
       texto: novaMensagem,
     };
 
@@ -211,8 +215,8 @@ function MessageList(props) {
             >
               <Image
                 styleSheet={{
-                  width: "20px",
-                  height: "20px",
+                  width: "2rem",
+                  height: "2rem",
                   borderRadius: "50%",
                   display: "inline-block",
                   marginRight: "8px",
@@ -220,6 +224,7 @@ function MessageList(props) {
                 src={`https://github.com/${mensagem.de}.png`}
               />
               <Text tag="strong">{mensagem.de}</Text>
+              {new Date().toLocaleDateString()}
               <Text
                 styleSheet={{
                   fontSize: "10px",
@@ -227,8 +232,7 @@ function MessageList(props) {
                   color: appConfig.theme.colors.neutrals[300],
                 }}
                 tag="span"
-              >
-                {new Date().toLocaleDateString()}
+                >
               </Text>
             </Box>
             {mensagem.texto}

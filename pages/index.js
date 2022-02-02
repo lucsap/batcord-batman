@@ -1,6 +1,6 @@
 import { Box, Button, Text, TextField, Image } from "@skynexui/components";
-import React from "react";
 import { useRouter } from "next/router";
+import React from "react";
 import appConfig from "../config.json";
 
 function Title(props) {
@@ -78,7 +78,8 @@ export default function PaginaInicial() {
               event.preventDefault();
               console.log("Alguém submeteu o form");
               // window.location.href = "/chat"
-              roteamento.push('/chat');
+              roteamento.push(`/chat?username=${username}`);
+              // roteamento.push('/chat?username=' + username);
             }}
             styleSheet={{
               display: "flex",
