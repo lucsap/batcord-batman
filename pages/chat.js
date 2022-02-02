@@ -28,14 +28,25 @@ export default function ChatPage() {
   const usuarioLogado = roteamento.query.username;
   // console.log('Roteamento.Query', roteamento.query)
   const [mensagem, setMensagem] = React.useState("");
-  const [listaMensagem, setListaMensagem] = React.useState([]);
+  const [listaMensagem, setListaMensagem] = React.useState([
+    // {
+    //   id: 1,
+    //   de: 'omariosouto',
+    //   texto: ':sticker: https://gifimage.net/wp-content/uploads/2017/09/batman-gif-4.gif',
+    // },
+    // {
+    //   id: 2,
+    //   de: 'peas',
+    //   texto: 'O ternário é meio triste...'
+    // }
+  ]);
 
   React.useEffect(() => {
     supabaseClient
       .from("mensagens")
       .select("*")
       .then(({ data }) => {
-        console.log("Dados da consulta: ", data);
+        // console.log("Dados da consulta: ", data);
         setListaMensagem(data);
       });
   }, [listaMensagem]);
@@ -55,10 +66,7 @@ export default function ChatPage() {
       ])
       .then(({ data }) => {
         // console.log("Criando mensagem: ", data);
-        setListaMensagem([
-          ...listaMensagem,
-          data[0],
-        ]);
+        setListaMensagem([...listaMensagem, data[0]]);
       });
 
     // Chamada de um backend
@@ -150,7 +158,16 @@ export default function ChatPage() {
                 color: appConfig.theme.colors.neutrals[200],
               }}
             />
-            <ButtonSendSticker />
+            {/* Callback */}
+            <ButtonSendSticker
+              onStickerClick={(sticker) => {
+                console.log(
+                  "[USANDO O COMPONENTE] Salva esse sticker no banco",
+                  sticker
+                );
+                handleNovaMensagem(":sticker: " + sticker);
+              }}
+            />
           </Box>
         </Box>
       </Box>
@@ -184,7 +201,7 @@ function Header() {
 
 function MessageList(props) {
   //   console.log("MessageList", props);
-  console.log(props.listaMensagem);
+  // console.log(props.listaMensagem);
   return (
     <Box
       tag="ul"
@@ -227,7 +244,6 @@ function MessageList(props) {
                 src={`https://github.com/${mensagem.de}.png`}
               />
               <Text tag="strong">{mensagem.de}</Text>
-              {new Date().toLocaleDateString()}
               <Text
                 styleSheet={{
                   fontSize: "10px",
@@ -235,10 +251,21 @@ function MessageList(props) {
                   color: appConfig.theme.colors.neutrals[300],
                 }}
                 tag="span"
-                >
+              >
+                {new Date().toLocaleDateString()}
               </Text>
             </Box>
-            {mensagem.texto}
+            {/* Condicional: {mensagem.texto.startsWith(":sticker:").toString()} */}
+            {mensagem.texto.startsWith(":sticker:") ? (
+              <Image src={mensagem.texto.replace(":sticker:", "")} />
+            ) : (
+              mensagem.texto
+            )}
+            {/* if mensagem de texto possui stickers:
+              mostra a imagem
+            else
+              mensagem.texto */}
+            {/* {mensagem.texto} */}
           </Text>
         );
       })}

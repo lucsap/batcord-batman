@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Button, Text, Image } from "@skynexui/components";
 import appConfig from "../../config.json";
 
-export function ButtonSendSticker() {
+export function ButtonSendSticker(props) {
   const [isOpen, setOpenState] = React.useState("");
 
   return (
@@ -75,14 +75,12 @@ export function ButtonSendSticker() {
           >
             {appConfig.stickers.map((sticker) => (
               <Text
-                /*
                 onClick={() => {
                   // console.log('[DENTRO DO COMPONENTE] Clicou no sticker:', sticker);
                   if (Boolean(props.onStickerClick)) {
                     props.onStickerClick(sticker);
                   }
-                }}
-                */
+                }}                
                 tag="li"
                 key={sticker}
                 styleSheet={{
