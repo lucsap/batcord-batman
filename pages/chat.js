@@ -11,6 +11,15 @@ const SUPABASE_ANON_KEY =
 const SUPABASE_URL = "https://exhnwsmgojkwehbtpzey.supabase.co";
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+function escutaMensagensEmTempoReal(adicionaMensagem) {
+  return supabaseClient
+    .from("mensagens")
+    .on("INSERT", (respostaLive) => {
+      adicionaMensagem(respostaLive.new);
+    })
+    .subscribe();
+}
+
 export default function ChatPage() {
   /*
   // Usuário
@@ -24,22 +33,11 @@ export default function ChatPage() {
     - [x] Lista de mensagens
     */
 
-  const roteamento = useRouter();
-  const usuarioLogado = roteamento.query.username;
-  // console.log('Roteamento.Query', roteamento.query)
-  const [mensagem, setMensagem] = React.useState("");
-  const [listaMensagem, setListaMensagem] = React.useState([
-    // {
-    //   id: 1,
-    //   de: 'omariosouto',
-    //   texto: ':sticker: https://gifimage.net/wp-content/uploads/2017/09/batman-gif-4.gif',
-    // },
-    // {
-    //   id: 2,
-    //   de: 'peas',
-    //   texto: 'O ternário é meio triste...'
-    // }
-  ]);
+   const roteamento = useRouter();
+   const [mensagem, setMensagem] = React.useState("");
+   const [listaMensagem, setListaMensagem] = React.useState([]);
+   const usuarioLogado = roteamento.query.username;
+   // console.log('Roteamento.Query', roteamento.query)
 
   React.useEffect(() => {
     supabaseClient
@@ -49,7 +47,22 @@ export default function ChatPage() {
         // console.log("Dados da consulta: ", data);
         setListaMensagem(data);
       });
-  }, [listaMensagem]);
+
+    const subscription = escutaMensagensEmTempoReal((novaMensagem) => {
+      console.log("Nova mensagem:", novaMensagem);
+      setListaMensagem((valorAtualDaLista) => {
+        console.log('valorAtualDaLista: ', valorAtualDaLista);
+        return [
+          ...valorAtualDaLista,
+          novaMensagem,
+        ]
+      });
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    }
+  }, []);
 
   function handleNovaMensagem(novaMensagem) {
     const mensagem = {
@@ -65,8 +78,7 @@ export default function ChatPage() {
         mensagem,
       ])
       .then(({ data }) => {
-        // console.log("Criando mensagem: ", data);
-        setListaMensagem([...listaMensagem, data[0]]);
+        console.log("Criando mensagem: ", data);
       });
 
     // Chamada de um backend
@@ -161,10 +173,7 @@ export default function ChatPage() {
             {/* Callback */}
             <ButtonSendSticker
               onStickerClick={(sticker) => {
-                console.log(
-                  "[USANDO O COMPONENTE] Salva esse sticker no banco",
-                  sticker
-                );
+                // console.log("[USANDO O COMPONENTE] Salva esse sticker no banco", sticker);
                 handleNovaMensagem(":sticker: " + sticker);
               }}
             />
