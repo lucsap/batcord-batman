@@ -8,25 +8,14 @@ const SUPABASE_ANON_KEY =
 const SUPABASE_URL = "https://exhnwsmgojkwehbtpzey.supabase.co";
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-React.useEffect();
-supabaseClient
-  .from("mensagens")
-  .select("*")
-  .then((dados) => {
-    console.log("Dados da consulta: ", dados);
-  });
-
-console.log(dadosDoSupabaseClient);
-
 export default function ChatPage() {
-  
   /*
-    // Usuário
-    - Usuário digita no campo textarea
-    - Aperta enter pra enviar
-    - Tem que adicionar o texto na listagem
+  // Usuário
+  - Usuário digita no campo textarea
+  - Aperta enter pra enviar
+  - Tem que adicionar o texto na listagem
 
-    // Dev
+  // Dev
     - [x] Campo criado
     - [x] Vamos usar o onChange usa o UseState (ter if pra caso seja enter pra limpar a variável)
     - [x] Lista de mensagens
@@ -35,14 +24,38 @@ export default function ChatPage() {
   const [mensagem, setMensagem] = React.useState("");
   const [listaMensagem, setListaMensagem] = React.useState([]);
 
+  React.useEffect(() => {
+    supabaseClient
+      .from("mensagens")
+      .select("*")
+      .then(({ data }) => {
+        console.log("Dados da consulta: ", data);
+        setListaMensagem(data);
+      });
+  }, []);
+
   function handleNovaMensagem(novaMensagem) {
     const mensagem = {
-      id: listaMensagem.length + 1,
-      de: "rafaballerini",
+      // id: listaMensagem.length + 1,
+      de: "lucsap",
       texto: novaMensagem,
     };
+
+    supabaseClient
+      .from("mensagens")
+      .insert([
+        // Tem que ser um objeto com os MESMOS CAMPOS que você escreveu no supabase
+        mensagem,
+      ])
+      .then(({ data }) => {
+        // console.log("Criando mensagem: ", data);
+        setListaMensagem([
+          ...listaMensagem,
+          data[0],
+        ]);
+      });
+
     // Chamada de um backend
-    setListaMensagem([mensagem, ...listaMensagem]);
     setMensagem("");
   }
 
@@ -204,7 +217,7 @@ function MessageList(props) {
                   display: "inline-block",
                   marginRight: "8px",
                 }}
-                src={`https://github.com/rafaballerini.png`}
+                src={`https://github.com/${mensagem.de}.png`}
               />
               <Text tag="strong">{mensagem.de}</Text>
               <Text
