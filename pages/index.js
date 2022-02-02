@@ -35,9 +35,9 @@ function Title(props) {
 
 export default function PaginaInicial() {
   // const username = "lucsap";
-  const [username, setUsername] = React.useState("lucsap");
+  const [username, setUsername] = React.useState("");
   const roteamento = useRouter();
-  console.log(roteamento)
+  // console.log(roteamento)
 
   return (
     <>
@@ -119,6 +119,9 @@ export default function PaginaInicial() {
                 console.log("Usuário digitou", event.target.value);
                 // Onde ta o valor?
                 const valor = event.target.value;
+                // if (valor > 2) {
+                //   return (setUsername(valor));
+                // }
                 // Trocar o valor da variável
                 setUsername(valor);
               }}
