@@ -5,6 +5,7 @@ import { ButtonSendSticker } from "../src/components/ButtonSendSticker";
 import React from "react";
 import appConfig from "../config.json";
 
+// Commo fazer AJAX: https://medium.com/@omariosouto/entendendo-como-fazer-ajax-com-a-fetchapi-977ff20da3c6
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0Mzc3NzE4MiwiZXhwIjoxOTU5MzUzMTgyfQ.Nb1pFZD2xxMZKEZsIhG60U9ndmk00wMAhgsotKRwM_4";
 const SUPABASE_URL = "https://exhnwsmgojkwehbtpzey.supabase.co";
